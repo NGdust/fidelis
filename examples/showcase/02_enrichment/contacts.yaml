@@ -1,0 +1,18 @@
+version: 1
+generated_by: human
+signature: 8b1748
+mappings:
+- target: email
+  source: E-mail
+  transform: strip_lower
+  confidence: 1.0
+  status: ok
+- target: user_id
+  source: UserID
+  transform: strip
+  confidence: 1.0
+  status: ok
+enrich:
+- full_name
+batch_enrich:
+- attach_scores

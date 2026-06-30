@@ -1,0 +1,10 @@
+include LICENSE
+include README.md
+include pyproject.toml
+recursive-include fidelis py.typed
+recursive-include examples *.py *.csv
+recursive-include specs *.yaml
+prune docs
+prune .claude
+prune .cadence
+prune .idea

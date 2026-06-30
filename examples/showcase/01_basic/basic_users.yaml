@@ -1,0 +1,19 @@
+version: 1
+generated_by: human
+signature: 258e3c
+mappings:
+- target: email
+  source: E-mail
+  transform: strip_lower
+  confidence: 1.0
+  status: ok
+- target: full_name
+  source: Full Name
+  transform: strip
+  confidence: 1.0
+  status: ok
+- target: country
+  source: Country
+  value: US
+  confidence: 1.0
+  status: ok

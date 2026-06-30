@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fidelis"
+dynamic = ["version"]
+description = "Ingest messy tabular-ish feeds from any source and map them to your Pydantic model. An LLM writes a versioned spec once; every subsequent parse is deterministic, with zero LLM calls."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "NGdust", email = "gargan4ukv@yandex.ru" }]
+keywords = ["csv", "excel", "etl", "data-ingestion", "pydantic", "schema-mapping", "llm", "data-mapping"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Database",
+    "Topic :: Text Processing :: General",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+excel = ["openpyxl>=3"]
+anthropic = ["httpx>=0.24"]
+openai = ["httpx>=0.24"]
+local = ["httpx>=0.24"]
+llm = ["httpx>=0.24"]
+pandas = ["pandas>=2"]
+polars = ["polars>=1"]
+all = ["openpyxl>=3", "httpx>=0.24", "pandas>=2", "polars>=1"]
+dev = ["pytest>=8", "openpyxl>=3", "httpx>=0.24", "pandas>=2", "build>=1", "twine>=5"]
+
+[project.scripts]
+fidelis = "fidelis.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/NGdust/fidelis"
+Repository = "https://github.com/NGdust/fidelis"
+Issues = "https://github.com/NGdust/fidelis/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "fidelis.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fidelis*"]
+
+[tool.setuptools.package-data]
+fidelis = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

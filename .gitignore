@@ -1,0 +1,27 @@
+# Excluded from the published library repo (per project setup)
+docs/
+.claude/
+.cadence/
+.idea/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+PUBLISHING.md

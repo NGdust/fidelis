@@ -1,0 +1,4 @@
+IATA Code,Into-Plane Price,Currency,Vendor Name,Valid From
+DXB,2.45,USD,WFS,2026-06-01
+SIN,2.50,USD,WFS,2026-06-01
+DXB,not-a-number,USD,WFS,2026-06-01

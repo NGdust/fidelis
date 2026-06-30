@@ -1,0 +1,19 @@
+# WFS (international) fuel prices. IATA airport codes (not ICAO), no product
+# column (the model default "Jet A-1" applies), already in USD per liter.
+version: 1
+generated_by: human
+signature: 31cca3            # hash of {iata code, into-plane price, currency, vendor name, valid from}
+
+mappings:
+  - {target: airport_code, source: "IATA Code", transform: strip}
+  - {target: code_type,    value: "iata"}                 # this vendor uses IATA
+  - {target: price,        source: "Into-Plane Price", transform: to_float}
+  - {target: currency,     source: "Currency", transform: strip}
+  - {target: vendor,       source: "Vendor Name", transform: strip}
+  - {target: unit_volume,  value: "liter"}
+  - {target: valid_from,   source: "Valid From", transform: parse_date}
+  # note: no `product` mapping — the model's default "Jet A-1" is used.
+
+batch_enrich: [resolve_airports, resolve_vendors, price_to_usd_per_liter]
+dedup: {key: [airport_id, product], keep: last}
+on_unknown_column: error

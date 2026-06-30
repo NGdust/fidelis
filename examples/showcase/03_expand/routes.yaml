@@ -1,0 +1,17 @@
+version: 1
+generated_by: human
+signature: 80a0bc
+mappings:
+- target: route
+  source: ROUTE
+  transform: strip
+  confidence: 1.0
+  status: ok
+- target: airport
+  source: AIRPORTS
+  transform: strip
+  confidence: 1.0
+  status: ok
+expand:
+- field: airport
+  delimiter: '|'

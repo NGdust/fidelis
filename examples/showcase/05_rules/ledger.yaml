@@ -1,0 +1,36 @@
+version: 1
+generated_by: human
+signature: 46f95c
+mappings:
+- target: txn
+  source: TXN
+  transform: strip
+  confidence: 1.0
+  status: ok
+rules:
+- when:
+    field: AMOUNT
+    op: not_empty
+  mappings:
+  - target: kind
+    value: transfer
+    confidence: 1.0
+    status: ok
+  - target: amount
+    source: AMOUNT
+    transform: strip
+    confidence: 1.0
+    status: ok
+- when:
+    field: FEE
+    op: not_empty
+  mappings:
+  - target: kind
+    value: fee
+    confidence: 1.0
+    status: ok
+  - target: amount
+    source: FEE
+    transform: strip
+    confidence: 1.0
+    status: ok

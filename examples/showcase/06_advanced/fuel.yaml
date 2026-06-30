@@ -1,0 +1,38 @@
+version: 1
+generated_by: human
+signature: 209c5e
+mappings:
+- targets:
+    code: airport
+    name: airport_name
+  source: LOCATION
+  transform: split_location
+  confidence: 1.0
+  status: ok
+- target: grade
+  source: GRADE
+  value: JET-A
+  transform: strip
+  confidence: 1.0
+  status: ok
+- target: price
+  source: PRICE
+  transform: clip:0:2000
+  confidence: 1.0
+  status: ok
+- target: delivered
+  source: DELIVERED
+  transform: parse_date:%Y-%m-%d|%d/%m/%Y
+  confidence: 1.0
+  status: ok
+- target: volume
+  source: VOLUME
+  transform: to_int
+  confidence: 1.0
+  status: ok
+column_steps:
+  volume: normalize_volume
+skip_when:
+- field: LOCATION
+  op: eq
+  value: TOTAL

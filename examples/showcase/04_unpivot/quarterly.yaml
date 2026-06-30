@@ -1,0 +1,23 @@
+version: 1
+generated_by: human
+signature: 4d35e0
+unpivot:
+  columns:
+    PRICE: Q{i}_PRICE
+  count: 3
+  index_field: quarter
+mappings:
+- target: product
+  source: PRODUCT
+  transform: strip
+  confidence: 1.0
+  status: ok
+- target: quarter
+  source: quarter
+  confidence: 1.0
+  status: ok
+- target: price
+  source: PRICE
+  transform: strip
+  confidence: 1.0
+  status: ok

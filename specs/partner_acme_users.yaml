@@ -1,0 +1,66 @@
+# Hand-written fidelis spec for the "ACME partner users" feed.
+#
+# A spec is a human-readable, version-controlled contract for ingesting ONE
+# source format. Its identity is bound to `signature` (a hash of the
+# normalized source field names), NOT to this file's name — so the very same
+# spec applies to a CSV today and a JSON payload tomorrow if they carry the
+# same fields by meaning.
+#
+# Target model (tests/conftest.py):
+#   class User(BaseModel):
+#       email: str
+#       full_name: str
+#       signup_date: date
+
+version: 1
+generated_by: claude-opus-4-8        # set to "human" after a manual edit
+generated_at: "2026-06-28"
+signature: 6a93a9              # hash of {"e-mail address", "customer full name", "registration date"}
+
+# Stage 1 — structural dialect. Only relevant for text/file sources (CSV/TSV);
+# skipped entirely for already-structured inputs (list[dict] / JSON).
+parsing:
+  delimiter: ";"
+  encoding: utf-8
+  quote_char: '"'
+
+# Stage 2 — universal field mapping (source column -> target model field).
+# `transform` is a built-in name or `name:arg` (e.g. parse_date:%d.%m.%Y).
+# `confidence` < the parser's threshold (default 0.8) is auto-flagged
+# needs_review; a human reviews and flips status to `ok`.
+mappings:
+  - target: email
+    source: "E-mail Address"
+    transform: strip_lower
+    confidence: 0.98
+    status: ok
+
+  - target: full_name
+    source: "Customer Full Name"
+    transform: strip
+    confidence: 0.91
+    status: ok
+
+  - target: signup_date
+    source: "Registration Date"
+    transform: "parse_date:%d.%m.%Y"
+    confidence: 0.62
+    status: needs_review     # LLM unsure — developer verifies, then sets ok
+
+# Stage 3 — record-level steps, referenced by registered name. You add these by
+# hand (the LLM never writes them); register the functions in code with
+# @register_enrichment / @register_batch_enrichment. Uncomment to use:
+#
+# enrich:                 # per-row; each sees the previous one's output
+#   - fill_domain
+# batch_enrich:           # whole-batch; one bulk lookup for the feed
+#   - attach_scores
+# dedup:                  # collapse duplicate rows after validation
+#   key: [email]
+#   keep: first           # first | last
+
+# Per-source drift policy (overrides the Parser's global on_unknown_column).
+#   ignore     — silently drop unknown columns
+#   error      — raise with a precise message, losing nothing silently (default)
+#   regenerate — ask the LLM to fill in only the missing part of the mapping
+on_unknown_column: error

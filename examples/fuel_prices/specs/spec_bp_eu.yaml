@@ -1,0 +1,23 @@
+# BP (EU) fuel prices. Semicolon-delimited, EUR per liter, comma decimals,
+# dd.mm.yyyy dates, vendor in a "Supplier" column.
+version: 1
+generated_by: human
+signature: 1b5e80            # hash of {icao, fuel type, price (eur/l), supplier, date}
+
+parsing:
+  delimiter: ";"
+  encoding: utf-8
+
+mappings:
+  - {target: airport_code, source: "ICAO", transform: strip}
+  - {target: code_type,    value: "icao"}
+  - {target: product,      source: "Fuel Type", transform: strip}
+  - {target: price,        source: "Price (EUR/L)", transform: eu_float}
+  - {target: vendor,       source: "Supplier", transform: strip}
+  - {target: currency,     value: "EUR"}
+  - {target: unit_volume,  value: "liter"}
+  - {target: valid_from,   source: "Date", transform: "parse_date:%d.%m.%Y"}
+
+batch_enrich: [resolve_airports, resolve_vendors, price_to_usd_per_liter]
+dedup: {key: [airport_id, product], keep: last}
+on_unknown_column: error

@@ -1,0 +1,28 @@
+# Shell (US) fuel prices. US gallons, USD, no vendor/currency columns in the
+# file — supplied here as constants via `value`.
+version: 1
+generated_by: human
+signature: 05cd14            # hash of {airport, product, usd/gallon, effective date}
+
+mappings:
+  - {target: airport_code, source: "Airport", transform: strip}
+  - {target: code_type,    value: "icao"}                 # constant
+  - {target: product,      source: "Product", transform: strip}
+  - {target: price,        source: "USD/Gallon", transform: to_float}
+  - {target: vendor,       value: "Shell Aviation"}       # no column in the file
+  - {target: currency,     value: "USD"}                  # default
+  - {target: unit_volume,  value: "usg"}                  # gallons
+  - {target: valid_from,   source: "Effective Date", transform: parse_date}
+
+# DB enrichment, one bulk lookup each, for the whole file:
+batch_enrich:
+  - resolve_airports
+  - resolve_vendors
+  - price_to_usd_per_liter
+
+# collapse duplicate (airport, product) rows, keep the most recent line:
+dedup:
+  key: [airport_id, product]
+  keep: last
+
+on_unknown_column: error

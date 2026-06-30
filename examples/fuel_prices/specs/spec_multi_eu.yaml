@@ -1,0 +1,31 @@
+# A vendor that lists SEVERAL airports in one cell (pipe-separated). The row
+# fans out into one record per airport via `expand`, and the DB enrichments then
+# run per-airport.
+version: 1
+generated_by: human
+signature: 80e14f            # hash of {airports, product, price (eur/l), supplier, date}
+
+parsing:
+  delimiter: ";"
+  encoding: utf-8
+
+mappings:
+  - {target: airport_code, source: "Airports", transform: strip}   # e.g. "EGLL|LFPG"
+  - {target: code_type,    value: "icao"}
+  - {target: product,      source: "Product", transform: strip}
+  - {target: price,        source: "Price (EUR/L)", transform: eu_float}
+  - {target: vendor,       source: "Supplier", transform: strip}
+  - {target: currency,     value: "EUR"}
+  - {target: unit_volume,  value: "liter"}
+  - {target: valid_from,   source: "Date", transform: "parse_date:%d.%m.%Y"}
+
+# one row -> one record per airport: split the airport_code cell on '|'.
+# Fully declarative — no code to register, the delimiter lives here.
+expand:
+  - field: airport_code
+    delimiter: "|"
+
+# enrichments below now run PER airport (each gets its own airport_id):
+batch_enrich: [resolve_airports, resolve_vendors, price_to_usd_per_liter]
+dedup: {key: [airport_id, product], keep: last}
+on_unknown_column: error
